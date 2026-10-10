@@ -1,6 +1,8 @@
 package com.beam.beam_desktop;
 
 import dev.onvoid.webrtc.PeerConnectionFactory;
+import dev.onvoid.webrtc.media.audio.AudioDeviceModule;
+import dev.onvoid.webrtc.media.audio.AudioLayer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -9,11 +11,16 @@ import org.springframework.context.annotation.Lazy;
 @Configuration
 public class RtcConfig {
 
-    // Lazy: the native library loads on first use, after PlatformSupport has vetted
-    // the machine — so an unsupported platform gets a friendly message, not a stack trace.
+    // Dummy audio: Beam only uses DataChannels (never mic/speaker), and the default
+    // platform audio device fails to initialize on hosts without an audio system
+    // (servers, CI runners, minimal Linux installs). kDummyAudio makes the factory
+    // constructible everywhere.
+    // Lazy: the native library then loads on first transfer at the latest, after
+    // PlatformSupport has vetted the machine with a friendly message on failure.
     @Bean
     @Lazy
     public PeerConnectionFactory peerConnectionFactory() {
-        return new PeerConnectionFactory();
+        AudioDeviceModule adm = new AudioDeviceModule(AudioLayer.kDummyAudio);
+        return new PeerConnectionFactory(adm);
     }
 }
