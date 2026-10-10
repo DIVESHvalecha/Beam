@@ -1,0 +1,32 @@
+# Maven build output
+target/
+*/target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+.project
+.classpath
+.settings/
+*.DS_Store
+
+# Secrets: never commit these
+.env
+*.env
+*.pem
+*.key
+*.p12
+*.jks
+
+# Logs
+*.log
+logs/
+
+# Local Beam runtime data (partials, logs)
+/.beam/
+beam-desktop/.beam/
+
+# Demo / local artifacts
+docs/demo.gif

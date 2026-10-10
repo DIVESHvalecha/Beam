@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: beam-desktop
+  main:
+    web-application-type: none
+    banner-mode: "off"

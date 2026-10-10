@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Beam — receive files from a laptop, privately</title>
+  <meta name="description" content="Beam receives files straight from a nearby laptop over an encrypted direct connection. No cloud, no account, no app to install.">
+  <meta name="theme-color" content="#2563eb" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Beam — private phone-to-laptop file transfer">
+  <meta property="og:description" content="Files go directly between your devices. The server never sees them.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Cpath d='M20 44V20h9a11 11 0 0 1 0 22h-9zm9-13h1.5a4.5 4.5 0 0 0 0-9H29z' fill='white'/%3E%3Cpath d='M36 22l14 10-14 10z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <header class="brand">
+      <h1>Beam</h1>
+      <p class="tagline">Get files from a laptop, privately.</p>
+    </header>
+
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <!-- 1. Enter code -->
+    <section data-screen="enter" aria-labelledby="enter-h">
+      <div class="card">
+        <h2 id="enter-h">Enter your code</h2>
+        <p class="muted">The 6-character code shown on the laptop screen.</p>
+        <form id="joinForm">
+          <label class="field-label" for="codeInput">Pairing code</label>
+          <input id="codeInput" name="code" type="text" inputmode="text" autocomplete="off"
+                 autocapitalize="characters" spellcheck="false" maxlength="6"
+                 placeholder="ABC123" aria-describedby="codeError">
+          <p id="codeError" class="error" hidden></p>
+          <button type="submit" class="primary big">Connect</button>
+        </form>
+      </div>
+      <div class="card ghost">
+        <h2>How it works</h2>
+        <p>Your laptop shows a code and a QR code. This page joins with that code and the two
+           devices connect <strong>directly</strong> — the file travels phone-to-laptop over an
+           encrypted connection, not through a cloud drive.</p>
+      </div>
+    </section>
+
+    <!-- 2. Connecting -->
+    <section data-screen="connecting" hidden aria-labelledby="connecting-h">
+      <div class="card center">
+        <h2 id="connecting-h">Connecting…</h2>
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="muted" id="connectingDetail">Reaching the Beam server…</p>
+        <button type="button" class="secondary" data-action="cancel">Cancel</button>
+      </div>
+    </section>
+
+    <!-- 3. Connected -->
+    <section data-screen="connected" hidden aria-labelledby="connected-h">
+      <div class="card">
+        <h2 id="connected-h">Connected</h2>
+        <p class="muted" id="connectedNote">Choose a file to send it to the laptop.
+           Files sent <em>from</em> the laptop will appear here automatically.</p>
+        <label class="file-pick big" for="fileInput">Choose a file</label>
+        <input id="fileInput" type="file" hidden>
+        <div id="dropZone" class="dropzone" tabindex="0" role="button"
+             aria-label="Or drop a file here (desktop browsers)">
+          <span id="dropLabel">or drop a file here</span>
+        </div>
+        <div id="pickedWrap" hidden>
+          <p class="file-line"><strong id="pickedName"></strong><br>
+            <span class="muted" id="pickedSize"></span></p>
+          <button type="button" id="sendBtn" class="primary big">Send to laptop</button>
+        </div>
+        <button type="button" class="secondary" data-action="cancel">Disconnect</button>
+      </div>
+    </section>
+
+    <!-- 4. Sending -->
+    <section data-screen="sending" hidden aria-labelledby="sending-h">
+      <div class="card">
+        <h2 id="sending-h">Sending</h2>
+        <p class="file-line"><strong id="sendName"></strong><br>
+          <span class="muted" id="sendDetail"></span></p>
+        <progress id="sendBar" max="100" value="0" aria-label="Send progress"></progress>
+        <p class="muted"><span id="sendPct">0%</span> · <span id="sendSpeed"></span></p>
+        <p class="muted" id="resumeNote" hidden>Sending resumes automatically if the connection drops.</p>
+        <button type="button" class="secondary" data-action="cancel">Cancel</button>
+      </div>
+    </section>
+
+    <!-- 5. Receiving -->
+    <section data-screen="receiving" hidden aria-labelledby="receiving-h">
+      <div class="card">
+        <h2 id="receiving-h">Receiving</h2>
+        <p class="file-line"><strong id="recvName"></strong><br>
+          <span class="muted" id="recvSize"></span></p>
+        <progress id="recvBar" max="100" value="0" aria-label="Receive progress"></progress>
+        <p class="muted"><span id="recvPct">0%</span> · <span id="recvSpeed"></span></p>
+      </div>
+    </section>
+
+    <!-- 6. Done -->
+    <section data-screen="done" hidden aria-labelledby="done-h">
+      <div class="card center">
+        <h2 id="done-h">Done ✓</h2>
+        <p id="doneDetail" class="muted"></p>
+        <a id="downloadBtn" class="primary big" hidden href="#">Download file</a>
+        <button type="button" id="againBtn" class="secondary">Send another file</button>
+        <button type="button" class="secondary" data-action="cancel">Disconnect</button>
+      </div>
+    </section>
+
+    <!-- 7. Paused / reconnect -->
+    <section data-screen="paused" hidden aria-labelledby="paused-h">
+      <div class="card center">
+        <h2 id="paused-h">Connection lost</h2>
+        <p>Transfer paused at <strong id="pausedPct">0%</strong>. Your progress is kept.</p>
+        <p class="muted">Scan the <strong>new</strong> QR code on the laptop, or type the new code:</p>
+        <form id="rejoinForm">
+          <label class="field-label" for="rejoinInput">New code</label>
+          <input id="rejoinInput" type="text" inputmode="text" autocomplete="off"
+                 autocapitalize="characters" spellcheck="false" maxlength="6" placeholder="ABC123">
+          <p id="rejoinError" class="error" hidden></p>
+          <button type="submit" class="primary big">Reconnect</button>
+        </form>
+        <button type="button" class="secondary" data-action="cancel">Give up</button>
+      </div>
+    </section>
+
+    <!-- 8. Error -->
+    <section data-screen="error" hidden aria-labelledby="error-h">
+      <div class="card center">
+        <h2 id="error-h">Something went wrong</h2>
+        <p id="errorDetail"></p>
+        <button type="button" id="retryBtn" class="primary big">Try again</button>
+        <button type="button" class="secondary" data-action="cancel">Back to start</button>
+      </div>
+    </section>
+
+    <details id="details">
+      <summary>Details (connection log)</summary>
+      <div id="log" aria-label="Connection log"></div>
+    </details>
+
+    <footer>
+      <p>Files go directly between your devices. The server never sees them.</p>
+      <p><a id="repoLink" href="https://github.com/">Beam on GitHub</a></p>
+    </footer>
+  </main>
+
+  <script src="sha256.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

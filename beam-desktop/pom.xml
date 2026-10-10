@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.1.1</version>
+		<relativePath/>
+	</parent>
+	<groupId>com.beam</groupId>
+	<artifactId>beam-desktop</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<properties>
+		<java.version>21</java.version>
+		<webrtc-java.version>0.19.0</webrtc-java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>dev.onvoid.webrtc</groupId>
+			<artifactId>webrtc-java</artifactId>
+			<version>${webrtc-java.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- One JAR for every 64-bit desktop OS: NativeLoader picks the matching
+		     libwebrtc-java-<platform> binary from the classpath at runtime.
+		     linux-aarch32 is published but deliberately omitted: no JDK 21 port
+		     exists for 32-bit ARM, so it could never run. -->
+		<dependency>
+			<groupId>dev.onvoid.webrtc</groupId>
+			<artifactId>webrtc-java</artifactId>
+			<version>${webrtc-java.version}</version>
+			<classifier>macos-aarch64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>dev.onvoid.webrtc</groupId>
+			<artifactId>webrtc-java</artifactId>
+			<version>${webrtc-java.version}</version>
+			<classifier>macos-x86_64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>dev.onvoid.webrtc</groupId>
+			<artifactId>webrtc-java</artifactId>
+			<version>${webrtc-java.version}</version>
+			<classifier>linux-x86_64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>dev.onvoid.webrtc</groupId>
+			<artifactId>webrtc-java</artifactId>
+			<version>${webrtc-java.version}</version>
+			<classifier>linux-aarch64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>dev.onvoid.webrtc</groupId>
+			<artifactId>webrtc-java</artifactId>
+			<version>${webrtc-java.version}</version>
+			<classifier>windows-x86_64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>dev.onvoid.webrtc</groupId>
+			<artifactId>webrtc-java</artifactId>
+			<version>${webrtc-java.version}</version>
+			<classifier>windows-aarch64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.lanterna</groupId>
+			<artifactId>lanterna</artifactId>
+			<version>3.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.5.4</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>beam</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

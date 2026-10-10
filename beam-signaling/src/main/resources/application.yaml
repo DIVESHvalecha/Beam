@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: beam-signaling
+
+beam:
+  turn:
+    host: 3.111.131.68
+    port: 3478
+    ttl-seconds: 3600
+    secret: ${TURN_SECRET}
