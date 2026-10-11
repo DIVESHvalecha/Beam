@@ -32,14 +32,33 @@ public final class PlatformSupport {
                     + " / " + System.getProperty("os.arch") + "). Supported: macOS, Linux and"
                     + " Windows on 64-bit Intel/ARM.");
         }
-        String ext = platform.startsWith("windows") ? "dll"
-                : platform.startsWith("macos") ? "dylib" : "so";
-        String resource = "/libwebrtc-java-" + platform + "." + ext;
-        if (PeerConnectionFactoryHolder.class.getResourceAsStream(resource) == null) {
+        String resource = nativeResourceName(platform);
+        if (resource == null || PeerConnectionFactoryHolder.class.getResourceAsStream(resource) == null) {
             return Optional.of("beam.jar is missing the native library for this platform (" + platform
                     + "). Download a fresh beam.jar from the GitHub release page.");
         }
         return Optional.empty();
+    }
+
+    /**
+     * Classpath resource holding the native library. Unix artifacts use the {@code lib}
+     * prefix ({@code libwebrtc-java-<platform>.so/.dylib}); the Windows DLLs ship without
+     * it ({@code webrtc-java-<platform>.dll}). Null when the platform is unknown.
+     */
+    static String nativeResourceName(String platform) {
+        if (platform == null) {
+            return null;
+        }
+        if (platform.startsWith("windows")) {
+            return "/webrtc-java-" + platform + ".dll";
+        }
+        if (platform.startsWith("macos")) {
+            return "/libwebrtc-java-" + platform + ".dylib";
+        }
+        if (platform.startsWith("linux")) {
+            return "/libwebrtc-java-" + platform + ".so";
+        }
+        return null;
     }
 
     /** Loads the class only (never triggers native loading); keeps the check side-effect free. */
