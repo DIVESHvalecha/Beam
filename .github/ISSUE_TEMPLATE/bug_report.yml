@@ -1,0 +1,59 @@
+name: Bug report
+description: Something in Beam doesn't work
+title: "[bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Fill in what you can — the log excerpt is the most useful part.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what happened instead.
+      placeholder: |
+        Ran `java -jar beam.jar send photo.jpg`, scanned the QR, transfer stalled at 40% and never resumed.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Beam version
+      description: Output of `java -jar beam.jar --version`.
+      placeholder: "0.0.1-SNAPSHOT"
+    validations:
+      required: true
+  - type: input
+    id: os-java
+    attributes:
+      label: Laptop OS and Java version
+      description: OS + version and the output of `java -version`.
+      placeholder: "macOS 15, Temurin 21.0.5"
+    validations:
+      required: true
+  - type: input
+    id: phone
+    attributes:
+      label: Phone model and browser
+      placeholder: "Pixel 8, Chrome 131"
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log excerpt
+      description: |
+        Laptop: the relevant lines from `~/.beam/logs/beam.log`.
+        Phone: copy from the page's Details log. Redact anything private;
+        never paste secrets or live pairing codes.
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I redacted secrets and live pairing codes from the log above
+          required: true

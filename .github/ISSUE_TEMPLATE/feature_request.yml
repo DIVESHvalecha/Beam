@@ -1,0 +1,28 @@
+name: Feature request
+description: An idea for Beam
+title: "[feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What can't you (or your users) do today?
+      placeholder: I want to send a whole folder without zipping it first.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How should it work? UI sketches in words are fine.
+    validations:
+      required: false
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      description: Beam stays small on purpose — confirm the idea fits.
+      options:
+        - label: "This does not need an account, a cloud, or an app install on the phone"
+        - label: "This does not change the wire format on one side only (or: it needs no protocol change)"

@@ -18,7 +18,6 @@ import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.Window;
 import com.googlecode.lanterna.gui2.WindowListenerAdapter;
-import com.googlecode.lanterna.gui2.dialogs.FileDialogBuilder;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -194,13 +193,7 @@ public class TuiApp implements BeamListener {
     private File pickFile() {
         File downloads = new File(System.getProperty("user.home"), "Downloads");
         File start = downloads.isDirectory() ? downloads : new File(System.getProperty("user.home"));
-        return new FileDialogBuilder()
-                .setTitle("Choose a file to send")
-                .setDescription("Pick a file, then have your phone scan the code.")
-                .setActionLabel("Send")
-                .setSelectedFile(start)
-                .build()
-                .showDialog(gui);
+        return FileBrowserDialog.showDialog(gui, start);
     }
 
     private void setMain(Panel panel, Main next) {
