@@ -1,0 +1,5 @@
+# Normalize line endings on every checkout so Windows (CRLF) and macOS/Linux (LF)
+# contributors get a clean diff. Batch scripts must stay CRLF for CMD.
+* text=auto
+*.cmd text eol=crlf
+*.bat text eol=crlf

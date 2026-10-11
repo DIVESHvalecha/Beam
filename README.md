@@ -141,9 +141,14 @@ java -jar beam.jar                         # open the home screen
 java -jar beam.jar send                    # open the file picker, then show the QR
 java -jar beam.jar send ~/Videos/trip.mp4  # send a specific file
 java -jar beam.jar receive                 # wait for a file from your phone
+java -jar beam.jar --cli --send trip.mp4   # console mode: prints code + QR as text
+java -jar beam.jar --cli --receive         # console mode receive (accept with y)
 java -jar beam.jar --help
 java -jar beam.jar --version
 ```
+
+Console mode (`--cli`) is the fallback when the full-screen UI cannot start —
+notably on Windows CMD — and prints the same code, link and QR as text.
 
 ### Keys in the terminal UI
 
@@ -352,6 +357,25 @@ cd Beam/beam-desktop
 ./mvnw verify                 # build and run tests
 java -jar target/beam.jar     # run the packaged app
 ```
+
+### Building on Windows
+
+Use the Windows wrapper (`mvnw.cmd`), and make sure `JAVA_HOME` points to JDK 21+:
+
+```bat
+cd Beam\beam-desktop
+.\mvnw.cmd verify
+java -jar target\beam.jar
+```
+
+Notes:
+
+- Run it in CMD, PowerShell, or Windows Terminal — **not** Git Bash for the TUI (see below).
+- The first build downloads the Maven wrapper and all dependencies (including every platform's WebRTC natives), so it needs network and looks idle for a while. Later builds are fast.
+- If a test fails on your machine but the code looks right, unblock yourself with `.\mvnw.cmd -DskipTests package` and paste the failing test output in your issue/PR.
+- The full-screen TUI does not work in plain CMD/PowerShell — use `java -jar beam.jar --cli --send <file>` (or `--cli --receive`) there, or run the TUI from Windows Terminal / Git Bash.
+
+CI builds and tests on Ubuntu, macOS, and Windows, so a Windows-only breakage is caught before merge.
 
 The browser client has no build step. To try it locally:
 

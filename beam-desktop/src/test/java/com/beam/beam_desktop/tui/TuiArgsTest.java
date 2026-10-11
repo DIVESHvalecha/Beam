@@ -33,4 +33,23 @@ class TuiArgsTest {
         assertEquals(TuiArgs.Action.SEND, picker.action());
         assertNull(picker.sendPath());
     }
+
+    @Test
+    void dashAliases() {
+        assertEquals(TuiArgs.Action.SEND, TuiArgs.parse(new String[]{"--send"}).action());
+        assertEquals(TuiArgs.Action.RECEIVE, TuiArgs.parse(new String[]{"--receive"}).action());
+        TuiArgs withPath = TuiArgs.parse(new String[]{"--send", "/tmp/a.pdf"});
+        assertEquals(TuiArgs.Action.SEND, withPath.action());
+        assertNotNull(withPath.sendPath());
+    }
+
+    @Test
+    void cliFlag() {
+        assertFalse(TuiArgs.parse(new String[]{"send"}).cli());
+        assertTrue(TuiArgs.parse(new String[]{"--cli", "send"}).cli());
+        assertTrue(TuiArgs.parse(new String[]{"send", "--cli"}).cli());
+        assertTrue(TuiArgs.parse(new String[]{"--cli"}).cli());
+        // --tui wins over --cli so the default stays the full-screen UI.
+        assertFalse(TuiArgs.parse(new String[]{"--cli", "--tui", "send"}).cli());
+    }
 }

@@ -1,4 +1,4 @@
-# Continuous integration: builds and tests beam-desktop on Linux and macOS,
+# Continuous integration: builds and tests beam-desktop on Linux, macOS and Windows,
 # and builds beam-signaling (read-only: this workflow never modifies that module).
 # Signaling's context test needs a TURN_SECRET value, so CI supplies a dummy —
 # the real secret lives only in /etc/beam/beam-signaling.env on the VPS.
@@ -12,7 +12,7 @@ jobs:
   desktop:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -24,6 +24,9 @@ jobs:
           distribution: temurin
           java-version: "21"
       - run: ./mvnw -B verify
+        if: runner.os != 'Windows'
+      - run: ./mvnw.cmd -B verify
+        if: runner.os == 'Windows'
 
   signaling:
     runs-on: ubuntu-latest
