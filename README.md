@@ -150,6 +150,40 @@ java -jar beam.jar --version
 Console mode (`--cli`) is the fallback when the full-screen UI cannot start —
 notably on Windows CMD — and prints the same code, link and QR as text.
 
+### Terminal UI vs console mode
+
+Beam has two interfaces for the laptop. Both do the same transfer; pick whichever
+works in your terminal.
+
+**Terminal UI (default).** Full-screen interface with a file picker, QR code,
+progress bars, and an Accept/Reject dialog for incoming files:
+
+```sh
+java -jar beam.jar send            # pick a file, then show the QR
+java -jar beam.jar receive         # show a QR, then accept the incoming file
+```
+
+In the send file picker, type to filter, `s` cycles the sort (newest first by
+default), `h` toggles hidden files, `Enter` opens/sends, `Backspace` goes up.
+
+**Console mode (`--cli`).** Plain line-based output for terminals the full-screen
+UI cannot use (Windows CMD/PowerShell) and for SSH/headless use. It prints the
+pairing code, the join link, and the QR code as text, plus text progress:
+
+```sh
+java -jar beam.jar --cli --send ~/Videos/trip.mp4
+java -jar beam.jar --cli --receive
+```
+
+Differences from the terminal UI:
+
+- `--cli --send` without a path asks for one on stdin (drag-and-drop into the
+  window works; surrounding quotes and `~` are handled).
+- Incoming files are accepted by typing `y` — anything else (including no answer
+  within 120 seconds) rejects, same safe default as the UI dialog.
+- Pass `--tui` to force the full-screen UI; without flags Beam tries the UI and
+  drops into console mode automatically if the terminal is unsupported.
+
 ### Keys in the terminal UI
 
 | Key | Action |
